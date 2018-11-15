@@ -125,6 +125,18 @@ function connect (rongId, token) {
       }
     }
   })
+
+  /**
+   * 多标签页抢占消息推送
+   */
+  document.addEventListener('visibilitychange', function () {
+    const instance = RongIMClient.getInstance()
+    if (document.visibilityState === 'visible') {
+      RongIMClient.connect(token, callbackConfig)
+    } else {
+      instance.disconnect()
+    }
+  })
 }
 
 /**

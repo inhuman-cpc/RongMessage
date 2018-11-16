@@ -112,31 +112,32 @@ function connect (rongId, token) {
   })
 
   RongIMClient.setConnectionStatusListener({
+    // 0: "CONNECTED"
+    // 1: "CONNECTING"
+    // 2: "DISCONNECTED"
+    // 3: "NETWORK_UNAVAILABLE"
+    // 4: "CONNECTION_CLOSED"
+    // 6: "KICKED_OFFLINE_BY_OTHER_CLIENT"
+    // 12: "DOMAIN_INCORRECT"
     onChanged: status => {
-      // 0: "CONNECTED"
-      // 1: "CONNECTING"
-      // 2: "DISCONNECTED"
-      // 3: "NETWORK_UNAVAILABLE"
-      // 4: "CONNECTION_CLOSED"
-      // 6: "KICKED_OFFLINE_BY_OTHER_CLIENT"
-      // 12: "DOMAIN_INCORRECT"
-      if (status > RongIMLib.ConnectionStatus.CONNECTING) {
-        RongIMClient.reconnect(callbackConfig, reconnectConfig)
-      }
+      emitter.emit('statusChanged', status)
     }
   })
+
 
   /**
    * 多标签页抢占消息推送
    */
-  document.addEventListener('visibilitychange', function () {
-    const instance = RongIMClient.getInstance()
-    if (document.visibilityState === 'visible') {
-      RongIMClient.connect(token, callbackConfig)
-    } else {
-      instance.disconnect()
-    }
-  })
+  // document.addEventListener('visibilitychange', function () {
+  //   const instance = RongIMClient.getInstance()
+  //   if (document.visibilityState === 'visible') {
+  //     if (instance.getCurrentConnectionStatus() > RongIMLib.ConnectionStatus.CONNECTING) {
+  //       reconnect()
+  //     }
+  //   } else {
+  //     instance.disconnect()
+  //   }
+  // })
 }
 
 /**
@@ -184,9 +185,17 @@ function sendImage ({receiver, content, extra, imageUri, user}, conversationType
   })
 }
 
+function reconnect () {
+  RongIMClient.reconnect(callbackConfig, reconnectConfig)
+}
+
 export default {
   connect,
+  reconnect,
   sendText,
   sendImage,
+  isConnected: () => RongIMClient.getInstance().getCurrentConnectionStatus() === RongIMLib.ConnectionStatus.CONNECTED,
+  currentStatus: () => RongIMClient.getInstance().getCurrentConnectionStatus(),
+  currentStatusText: () => RongIMLib.ConnectionStatus[RongIMClient.getInstance().getCurrentConnectionStatus()],
   emitter
 }

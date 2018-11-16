@@ -1,6 +1,6 @@
 {
   "name": "rong-message",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "a simple wrapper for rong cloud message",
   "main": "src/index.js",
   "repository": {
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/simongfxu/RongMessage/issues"
   },
-  "homepage": "https://github.com/simongfxu/RongMessage#readme"
+  "homepage": "https://github.com/simongfxu/RongMessage#readme",
+  "dependencies": {
+    "fbemitter": "^2.1.1"
+  }
 }
